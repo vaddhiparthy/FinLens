@@ -1,0 +1,57 @@
+worldofhelios.com, www.worldofhelios.com {
+	encode gzip zstd
+
+	handle /api/* {
+		reverse_proxy pepper-portfolio:10000
+	}
+
+	root * /srv/worldofhelios
+	try_files {path} /index.html
+	file_server
+}
+
+finlens-api.vaddhiparthy.vip {
+	reverse_proxy finlens-api:8000
+}
+
+uptime.vaddhiparthy.vip {
+	reverse_proxy uptime-kuma:3001
+}
+
+pepper.vaddhiparthy.vip {
+	reverse_proxy pepper-portfolio:10000
+}
+
+surya.vaddhiparthy.com {
+	redir /privacy-preserving-authentication-audit-data-platform /privacy-preserving-authentication-audit-data-platform/ 308
+
+	handle_path /privacy-preserving-authentication-audit-data-platform* {
+		reverse_proxy pramanaledger-demo:8075
+	}
+
+	redir /finlens /finlens/ 308
+
+	handle /finlens* {
+		reverse_proxy finlens-streamlit-public:8501
+	}
+
+	handle {
+		reverse_proxy surya-unified-site:8088
+	}
+}
+
+surya-admin.vaddhiparthy.com {
+	respond "Admin editor is not published yet." 403
+}
+
+finlens.vaddhiparthy.vip {
+	redir https://surya.vaddhiparthy.com/finlens/ 308
+}
+
+http://135.181.249.237 {
+	reverse_proxy surya-unified-site:8088
+}
+
+:80 {
+	reverse_proxy surya-unified-site:8088
+}
